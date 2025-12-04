@@ -1,1 +1,57 @@
 /* You can add global styles to this file, and also import other style files */
+
+html {
+    --bg-color-main: #5555ee;
+    --text-color-main: #000000;
+    --container-bg-color: #3333cc;
+    --container-border-color: #222299;
+    --elem-bg-color: #2222bb;
+    --elem-border-color: #000088;
+    --elem-hover-bg-color: #4444dd;
+    --elem-hover-border-color: #111177;
+}
+
+
+body {
+    background-color: var(--bg-color-main);
+    color: var(--text-color-main);
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    background-color: var(--container-bg-color);
+    border: 2px solid var(--container-border-color);
+}
+
+button, .button {
+    display: inline-block;
+    background-color: var(--elem-bg-color);
+    border: 2px solid var(--elem-border-color);
+    color: var(--text-color-main);
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 5px;
+}
+
+button:hover, .button:hover {
+    cursor: pointer;
+    background-color: var(--elem-hover-bg-color);
+    border-color: var(--elem-hover-border-color);
+}
+
+
+
+.col-flex {
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
