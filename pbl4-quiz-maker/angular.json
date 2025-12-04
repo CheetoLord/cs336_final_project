@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "pbl4_quiz_maker": {
+    "pbl4-quiz-maker": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -83,10 +83,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "pbl4_quiz_maker:build:production"
+              "buildTarget": "pbl4-quiz-maker:build:production"
             },
             "development": {
-              "buildTarget": "pbl4_quiz_maker:build:development"
+              "buildTarget": "pbl4-quiz-maker:build:development"
             }
           },
           "defaultConfiguration": "development"
