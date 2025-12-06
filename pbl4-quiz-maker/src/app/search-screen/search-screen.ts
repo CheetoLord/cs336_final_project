@@ -14,7 +14,7 @@ import { Quizes } from '../quizes';
           <h3>{{quiz.title}}</h3>
           <p>Number of Questions: {{quiz.questionCount}}</p>
           <a href="/test"><div class="button">Take Quiz</div></a>
-          <button>Edit Quiz</button>
+          <a href="/edit/{{quiz.id}}"><button>Edit Quiz</button></a>
         </div>
       }
     </div>
