@@ -5,7 +5,7 @@ import { EditScreen } from './edit-screen/edit-screen';
 
 export const routes: Routes = [
     { path: 'home', component: SearchScreen },
-    { path: 'test', component: TestScreen },
+    { path: 'test/:id', component: TestScreen },
     { path: 'edit/:id', component: EditScreen },
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: '**', redirectTo: 'home' },

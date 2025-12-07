@@ -7,7 +7,7 @@ import { Component, Input } from '@angular/core';
     <div class="quiz-display container">
       <h3>{{quiz.title}}</h3>
       <p>Number of Questions: {{quiz.questionCount}}</p>
-      <a href="/test"><div class="button quiz-display-button">Take Quiz</div></a>
+      <a href="/test/{{quiz.id}}"><div class="button quiz-display-button">Take Quiz</div></a>
       <a href="/edit/{{quiz.id}}"><div class="button quiz-display-button">Edit Quiz</div></a>
     </div>
   `,

@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { Route } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { Quizes } from '../quizes';
 import { QuizDisplay } from '../quiz-display/quiz-display';
@@ -21,12 +20,14 @@ import { FormsModule } from '@angular/forms';
 
     <div class="new-quiz-creation-container">
       <div class="new-quiz-creation-menu">
-        <form (submit)="createNewQuiz()">
-          <h2>Create a New Quiz</h2>
-          <label for="quiz-title">Quiz Title:</label><br>
-          <input type="text" id="quiz-title" name="quiz-title" [(ngModel)]="title_input"><br><br>
-          <input type="submit" value="Create Quiz">
-          <button type="button" (click)="hideNewQuizCreation()">Cancel</button>
+        <form>
+          <h2 class="centered">Create a New Quiz</h2>
+          <input type="text" id="quiz-title" name="quiz-title" placeholder="Enter quiz title" [(ngModel)]="title_input">
+          <p id="quiz-creation-empty-error" class="centered">Quiz title cannot be blank!</p>
+          <div id="quiz-creation-buttons-container" class="row-flex">
+            <div id="create-button" class="button" (click)="createNewQuiz()">Create Quiz</div>
+            <div id="cancel-button" class="button" (click)="hideNewQuizCreation()">Cancel</div>
+          </div>
         </form>
       </div>
     </div>
@@ -43,6 +44,7 @@ import { FormsModule } from '@angular/forms';
       background-color: #f0f0f0;
       max-height: 80vh;
       overflow-y: auto;
+      scrollbar-color: gray transparent; /* make sure the scrollbar track doesnt clip the border */
     }
 
 
@@ -68,10 +70,10 @@ import { FormsModule } from '@angular/forms';
 
     .new-quiz-creation-menu {
       position: absolute;
-      top: 20%;
-      left: 20%;
-      bottom: 20%;
-      right: 20%;
+      top: 30%;
+      left: 30%;
+      bottom: 30%;
+      right: 30%;
       background-color: #dddddd;
       margin: 20px auto;
       padding: 20px;
@@ -80,6 +82,7 @@ import { FormsModule } from '@angular/forms';
     }
 
     #quiz-title {
+      display: block;
       width: 80%;
       margin: 0 auto;
       text-align: center;
@@ -87,6 +90,46 @@ import { FormsModule } from '@angular/forms';
       border: 2px solid black;
       border-radius: 10px;
       background-color: #e0e0e0;
+    }
+
+    #quiz-creation-empty-error {
+      color: red;
+      display: none;
+      margin-top: 10px;
+      margin-bottom: 0px;
+    }
+
+    #quiz-creation-buttons-container {
+      margin-top: 10px;
+    }
+
+    #create-button, #cancel-button {
+      display: inline-block;
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      text-align: center;
+      border-color: black;
+    }
+
+    #create-button {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    #cancel-button {
+      background-color: #f44336;
+      color: white;
+    }
+
+    #create-button:hover {
+      background-color: #45a049;
+      font-weight: bold;
+    }
+
+    #cancel-button:hover {
+      background-color: #da190b;
+      font-weight: bold;
     }
 
   `,
@@ -98,10 +141,15 @@ export class SearchScreen {
   title_input: string = '';
 
   popupNewQuizCreation() {
+    // popup menu
     const container = document.querySelector('.new-quiz-creation-container') as HTMLElement;
     container.style.display = 'block';
+    // clear input field
     const titleInput = document.getElementById('quiz-title') as HTMLInputElement;
     titleInput.value = '';
+    // hide error message
+    const errorMsg = document.getElementById('quiz-creation-empty-error') as HTMLElement;
+    errorMsg.style.display = 'none';
   }
 
   hideNewQuizCreation() {
@@ -110,6 +158,11 @@ export class SearchScreen {
   }
 
   createNewQuiz() {
+    if (this.title_input.trim() === '') {
+      const errorMsg = document.getElementById('quiz-creation-empty-error') as HTMLElement;
+      errorMsg.style.display = 'block';
+      return;
+    }
     this.quizesService.newQuiz(this.title_input);
     this.hideNewQuizCreation();
   }

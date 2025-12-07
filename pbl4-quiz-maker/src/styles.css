@@ -52,6 +52,11 @@ button:hover, .button:hover {
     flex-direction: column;
 }
 
+.row-flex {
+    display: flex;
+    flex-direction: row;
+}
+
 
 
 .centered {
