@@ -90,6 +90,7 @@ import { FormsModule } from '@angular/forms';
       border: 2px solid black;
       border-radius: 10px;
       background-color: #e0e0e0;
+      font-size: 20px;
     }
 
     #quiz-creation-empty-error {
