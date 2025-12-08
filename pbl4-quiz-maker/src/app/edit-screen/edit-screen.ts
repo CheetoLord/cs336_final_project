@@ -2,19 +2,19 @@ import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-test-screen',
+  selector: 'app-edit-screen',
   imports: [],
   template: /*html*/`
-    <div style="margin: 20px;">
-      <p>
-        *Put quiz {{id()}} here*
-      </p>
-      <a href="/home">Go back to Home Screen</a>
-    </div>
+  <div style="margin: 20px;">
+    <p>
+      Insert edit screen for quiz {{id()}} here.
+    </p>
+    <a href="/home">Go back to Home Screen</a>
+  </div>
   `,
   styles: ``,
 })
-export class TestScreen {
+export class EditScreen {
   id = signal('');
   private activatedRoute = inject(ActivatedRoute);
 

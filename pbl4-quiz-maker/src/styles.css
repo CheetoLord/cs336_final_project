@@ -1,14 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
 
 html {
-    --bg-color-main: #5555ee;
+    --bg-color-main: #7777ff;
     --text-color-main: #000000;
-    --container-bg-color: #3333cc;
-    --container-border-color: #222299;
-    --elem-bg-color: #2222bb;
-    --elem-border-color: #000088;
-    --elem-hover-bg-color: #4444dd;
-    --elem-hover-border-color: #111177;
+    --container-bg-color: #5555ee;
+    --container-border-color: #4444aa;
+    --elem-bg-color: #4444dd;
+    --elem-border-color: #2222aa;
+    --elem-hover-bg-color: #6666ff;
+    --elem-hover-border-color: #222299;
+    --dark-elem-bg-color: #2222aa;
+    --dark-elem-border-color: #111188;
+    --dark-elem-hover-bg-color: #4444cc;
+    --dark-elem-hover-border-color: #2222aa;
 }
 
 
@@ -17,6 +21,7 @@ body {
     color: var(--text-color-main);
     margin: 0;
     font-family: Arial, sans-serif;
+    overflow: hidden;
 }
 
 .container {
@@ -47,6 +52,11 @@ button:hover, .button:hover {
     flex-direction: column;
 }
 
+.row-flex {
+    display: flex;
+    flex-direction: row;
+}
+
 
 
 .centered {
@@ -55,3 +65,6 @@ button:hover, .button:hover {
     align-items: center;
     text-align: center;
 }
+
+
+

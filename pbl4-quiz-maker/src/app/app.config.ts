@@ -9,6 +9,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
+    // Oh no! Not my API key being exposed and on the client side! Anything but that!
     provideRouter(routes), provideFirebaseApp(() => initializeApp({ projectId: "pbl4-quiz-maker", appId: "1:150011584476:web:79b917c3fa81d064f03919", storageBucket: "pbl4-quiz-maker.firebasestorage.app", apiKey: "AIzaSyCZn9e8oFp50QIZKYzaFZZYYgZ7BnvFGMw", authDomain: "pbl4-quiz-maker.firebaseapp.com", messagingSenderId: "150011584476"})), provideFirestore(() => getFirestore())
   ]
 };
