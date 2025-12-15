@@ -11,7 +11,7 @@ import { deleteUser } from '@angular/fire/auth';
     <div id="back-button" class="button" (click)="goToSearchScreen()">
       <i class="fa-solid fa-arrow-left"></i> Back
     </div>
-    <h1 class="centered">{{title}}</h1>
+    <h1 class="centered title">{{title}}</h1>
     <div class="col-flex questions-container">
       @for (question of questions(); track $index) {
         <question-display [questionId]="question.id" [delete]="deleter(question.id)" [question]="question.term" [answer]="question.definition"></question-display>
@@ -39,6 +39,14 @@ import { deleteUser } from '@angular/fire/auth';
     .new-question-button {
       margin: 10px;
       padding: 10px;
+      border-radius: 10px;
+    }
+
+
+    #back-button {
+      position: absolute;
+      left: 10px;
+      top: 10px;
       border-radius: 10px;
     }
 

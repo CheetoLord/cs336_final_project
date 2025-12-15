@@ -68,3 +68,11 @@ button:hover, .button:hover {
 
 
 
+.title {
+    font-size: 2rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 6px #333333;
+}
+
+
+

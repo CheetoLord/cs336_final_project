@@ -181,6 +181,10 @@ export class Quizes {
 
 
   async updateQuizQuestions(quizID: number, questions: number[]) {
+    // somehow a 0 gets in the questions list sometimes, even though there never was a question
+    // with ID 0. But why address the root issue when you can just:
+    questions = questions.filter(q => q !== 0)
+
     // Find the quiz document in Firestore
     const quizQuery = query(this.quizCollection, where('id', '==', quizID));
     const querySnapshot = await getDocs(quizQuery);

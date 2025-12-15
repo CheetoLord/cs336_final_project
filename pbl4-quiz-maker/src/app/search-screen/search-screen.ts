@@ -8,7 +8,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-search-screen',
   imports: [AsyncPipe, QuizDisplay, FormsModule],
   template: /*html*/`
-    <h1 class="centered">Welcome to the Quiz Maker!</h1>
+    <h1 class="centered title">Welcome to the Quiz Maker!</h1>
     <div class="col-flex quiz-container">
       @for (quiz of (quizes | async); track $index) {
         <quiz-display [quiz]="quiz"></quiz-display>
