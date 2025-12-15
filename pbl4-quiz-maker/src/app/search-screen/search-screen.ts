@@ -1,16 +1,19 @@
-import { Component, inject } from '@angular/core';
-import { AsyncPipe } from '@angular/common';
+import { Component, inject, computed, signal } from '@angular/core';
 import { Quizes } from '../quizes';
 import { QuizDisplay } from '../quiz-display/quiz-display';
 import { FormsModule } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-search-screen',
-  imports: [AsyncPipe, QuizDisplay, FormsModule],
+  imports: [QuizDisplay, FormsModule],
   template: /*html*/`
     <h1 class="centered title">Welcome to the Quiz Maker!</h1>
+    <div class="row-flex centered" style="margin-bottom: 20px;">
+      <input type="text" id="quiz-filter-input" name="quiz-filter-input" placeholder="Search for Quizes" [ngModel]="filterstr()" (ngModelChange)="filterstr.set($event)">
+    </div>
     <div class="col-flex quiz-container">
-      @for (quiz of (quizes | async); track $index) {
+      @for (quiz of filteredQuizes(); track $index) {
         <quiz-display [quiz]="quiz"></quiz-display>
       }
       <div class="new-quiz-button container button centered" (click)="popupNewQuizCreation()">
@@ -42,9 +45,20 @@ import { FormsModule } from '@angular/forms';
       border: 4px solid black;
       border-radius: 15px;
       background-color: #f0f0f0;
-      max-height: 80vh;
+      max-height: 70vh;
       overflow-y: auto;
       scrollbar-color: gray transparent; /* make sure the scrollbar track doesnt clip the border */
+    }
+
+
+
+    #quiz-filter-input {
+      width: 50%;
+      padding: 10px;
+      border: 2px solid black;
+      border-radius: 10px;
+      font-size: 16px;
+      text-align: center;
     }
 
 
@@ -137,7 +151,15 @@ import { FormsModule } from '@angular/forms';
 })
 export class SearchScreen {
   quizesService = inject(Quizes);
-  quizes = this.quizesService.fetchedQuizes$;
+  quizes = toSignal(this.quizesService.fetchedQuizes$, { initialValue: [] });
+  filterstr = signal('');
+  
+  filteredQuizes = computed(() => {
+    const filter = this.filterstr().toLowerCase();
+    return this.quizes().filter(quiz => 
+      quiz.title.toLowerCase().includes(filter)
+    );
+  });
 
   title_input: string = '';
 

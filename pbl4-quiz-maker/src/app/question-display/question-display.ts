@@ -8,7 +8,7 @@ import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
   imports: [CdkDragHandle],
   template: /*html*/`
     <div class="question-display-container container row-flex">
-      <i class="fa-solid fa-grip-lines drag-handle" ></i>
+      <i class="fa-solid fa-grip-lines drag-handle" cdkDragHandle ></i>
       <div class="question-display-input-section">
         <label for="question-input">Question</label>
         <input id="question-input" [value]="question" (input)="onQuestionChange($event)">
