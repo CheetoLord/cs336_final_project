@@ -82,8 +82,9 @@ export class QuizDisplay {
   @Input({ required: true }) quiz: any;
 
   qCountStr(): string {
-    const qCount = this.quiz.questions.length;
-    if (qCount === 0) {
+    const qCount = this.quiz.questions.split(",").length;
+    console.log('Quiz ID:', this.quiz.id, this.quiz.questions.split(","), this.quiz.questions);
+    if (this.quiz.questions === '') {
       return 'No Questions';
     }
     if (qCount === 1) {
