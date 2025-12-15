@@ -194,7 +194,6 @@ export class Quizes {
       const quizDoc = querySnapshot.docs[0];
       const quizDocRef = doc(this.firestore, 'quizes', quizDoc.id);
       await updateDoc(quizDocRef, { questions: questions.join(','), questionCount: questions.length });
-      console.log('Updated quiz questions for quiz ID:', quizID, 'New questions:', questions);
     }
   }
 

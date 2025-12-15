@@ -1,12 +1,14 @@
 import { Component, Input, inject } from '@angular/core';
 import { Signal, signal } from '@angular/core';
 import { Quizes } from '../quizes';
+import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'question-display',
-  imports: [],
+  imports: [CdkDragHandle],
   template: /*html*/`
-    <div class="question-display container row-flex">
+    <div class="question-display-container container row-flex">
+      <i class="fa-solid fa-grip-lines drag-handle" ></i>
       <div class="question-display-input-section">
         <label for="question-input">Question</label>
         <input id="question-input" [value]="question" (input)="onQuestionChange($event)">
@@ -23,9 +25,8 @@ import { Quizes } from '../quizes';
     </div>
   `,
   styles: /*css*/`
-    .question-display {
+    .question-display-container {
       flex: 0 0 150px;
-      margin: 10px;
       padding: 10px;
       border-radius: 10px;
     }
@@ -79,6 +80,16 @@ import { Quizes } from '../quizes';
       border: 2px solid black;
       border-radius: 10px;
       background-color: #e0e0e0;
+    }
+
+    .drag-handle {
+      font-size: 30px;
+      margin-right: 10px;
+      margin-top: auto;
+      margin-bottom: auto;
+      color: white;
+      cursor: move;
+      user-select: none;
     }
   `,
 })

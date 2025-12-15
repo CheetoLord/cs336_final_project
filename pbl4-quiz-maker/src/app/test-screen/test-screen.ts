@@ -148,7 +148,7 @@ import { APP_BASE_HREF } from '@angular/common';
     .progress-track, .correct-track {
       width: 100%;
       height: 18px;
-      background: var(--elem-bg-color);
+      background: #2244aa;
       border: 2px solid var(--elem-border-color);
       border-radius: 999px;
       overflow: hidden;
