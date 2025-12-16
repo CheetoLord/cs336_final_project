@@ -1,4 +1,130 @@
+import { Component, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { map, Observable } from 'rxjs';
+import { Quizes } from '../quizes';
+
+@Component({
+  selector: 'app-search-screen',
+  imports: [AsyncPipe, RouterLink, FormsModule],
+  template: /*html*/`
+    <div class="app-container">
+      <h1 class="hero-title">Welcome to the Quiz Maker</h1>
+      <div class="top-actions">
+        <button class="button" (click)="openCreate()">Create New +</button>
+      </div>
+      <div>
+        @for (category of (categories$ | async); track $index) {
+          <details class="dropdown">
+            <summary>{{ category }}</summary>
+            <div class="cards-grid">
+              @for (quiz of (quizes | async); track $index) {
+                @if ((quiz.category ?? 'My Quizzes') === category) {
+                  <div class="card">
+                    <h3>{{ quiz.title }}</h3>
+                    <p>Number of Questions: {{ quiz.questionCount }}</p>
+                    <div class="actions">
+                      <a routerLink="/test" class="button">Take Quiz</a>
+                      <button class="btn-secondary">Edit Quiz</button>
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+          </details>
+        }
+      </div>
+
+      @if (showCreate()) {
+        <div class="modal-backdrop" (click)="closeCreate()">
+          <div class="modal-card" (click)="$event.stopPropagation()">
+            <h3>Create a New Quiz</h3>
+            <form (ngSubmit)="onCreateQuiz()">
+              <div style="margin-bottom:10px;">
+                <label for="title">Title</label><br />
+                <input id="title" name="title" [(ngModel)]="newQuizTitle" placeholder="e.g., Web Dev" required />
+              </div>
+              <div style="margin-bottom:10px;">
+                <label for="category">Category</label><br />
+                <select id="category" name="category" [(ngModel)]="selectedCategory">
+                  @for (category of (categories$ | async); track $index) {
+                    <option [value]="category">{{ category }}</option>
+                  }
+                  <option value="__new__">Create new category…</option>
+                </select>
+              </div>
+              @if (selectedCategory === '__new__') {
+                <div style="margin-bottom:10px;">
+                  <label for="newCat">New Category Name</label><br />
+                  <input id="newCat" name="newCat" [(ngModel)]="newCategoryName" placeholder="e.g., Frontend" />
+                </div>
+              }
+              <div class="actions">
+                <button type="submit">Add Quiz</button>
+                <button type="button" class="btn-secondary" (click)="closeCreate()">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      }
+    </div>
+  `,
+  styles: ``,
+})
+export class SearchScreen {
+  quizesService = inject(Quizes);
+  quizes = this.quizesService.fetchedQuizes$;
+
+  // Derived categories from quiz data, defaulting to "My Quizzes" when missing
+  categories$: Observable<string[]> = this.quizes.pipe(
+    map(list => {
+      const cats = new Set<string>();
+      cats.add('My Quizzes');
+      list?.forEach(q => cats.add(q.category ?? 'My Quizzes'));
+      return Array.from(cats);
+    })
+  );
+
+  // Form state
+  newQuizTitle = '';
+  selectedCategory = 'My Quizzes';
+  newCategoryName = '';
+  showCreate = signal(false);
+
+  async onCreateQuiz() {
+    const chosenCategory = this.selectedCategory === '__new__'
+      ? (this.newCategoryName?.trim() || 'My Quizzes')
+      : this.selectedCategory;
+
+    await this.quizesService.addQuiz(this.newQuizTitle.trim(), chosenCategory);
+    this.resetForm();
+    this.closeCreate();
+  }
+
+  resetForm() {
+    this.newQuizTitle = '';
+    this.selectedCategory = 'My Quizzes';
+    this.newCategoryName = '';
+  }
+
+  openCreate() {
+    this.showCreate.set(true);
+  }
+
+  closeCreate() {
+    this.showCreate.set(false);
+  }
+}
+<<<<<<< HEAD
 import { Component, inject, computed, signal } from '@angular/core';
+=======
+import { Component, inject, signal } from '@angular/core';
+import { Route, RouterLink } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { map, Observable } from 'rxjs';
+>>>>>>> 1deee4f (updated UI and functionality)
 import { Quizes } from '../quizes';
 import { QuizDisplay } from '../quiz-display/quiz-display';
 import { FormsModule } from '@angular/forms';
@@ -6,6 +132,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-search-screen',
+<<<<<<< HEAD
   imports: [QuizDisplay, FormsModule],
   template: /*html*/`
     <h1 class="centered title">Welcome to the Quiz Maker!</h1>
@@ -15,6 +142,68 @@ import { toSignal } from '@angular/core/rxjs-interop';
     <div class="col-flex quiz-container">
       @for (quiz of filteredQuizes(); track $index) {
         <quiz-display [quiz]="quiz"></quiz-display>
+=======
+  imports: [AsyncPipe, RouterLink, FormsModule],
+  template: /*html*/`
+    <div class="app-container">
+      <h1 class="hero-title">Welcome to the Quiz Maker</h1>
+      <div class="top-actions">
+        <button class="button" (click)="openCreate()">Create New +</button>
+      </div>
+      <div>
+        @for (category of (categories$ | async); track $index) {
+          <details class="dropdown">
+            <summary>{{ category }}</summary>
+            <div class="cards-grid">
+              @for (quiz of (quizes | async); track $index) {
+                @if ((quiz.category ?? 'My Quizzes') === category) {
+                  <div class="card">
+                    <h3>{{ quiz.title }}</h3>
+                    <p>Number of Questions: {{ quiz.questionCount }}</p>
+                    <div class="actions">
+                      <a routerLink="/test" class="button">Take Quiz</a>
+                      <button class="btn-secondary">Edit Quiz</button>
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+          </details>
+        }
+      </div>
+
+      @if (showCreate()) {
+        <div class="modal-backdrop" (click)="closeCreate()">
+          <div class="modal-card" (click)="$event.stopPropagation()">
+            <h3>Create a New Quiz</h3>
+            <form (ngSubmit)="onCreateQuiz()">
+              <div style="margin-bottom:10px;">
+                <label for="title">Title</label><br />
+                <input id="title" name="title" [(ngModel)]="newQuizTitle" placeholder="e.g., Web Dev" required />
+              </div>
+              <div style="margin-bottom:10px;">
+                <label for="category">Category</label><br />
+                <select id="category" name="category" [(ngModel)]="selectedCategory">
+                  @for (category of (categories$ | async); track $index) {
+                    <option [value]="category">{{ category }}</option>
+                  }
+                  <option value="__new__">Create new category…</option>
+                </select>
+              </div>
+              @if (selectedCategory === '__new__') {
+                <div style="margin-bottom:10px;">
+                  <label for="newCat">New Category Name</label><br />
+                  <input id="newCat" name="newCat" [(ngModel)]="newCategoryName" placeholder="e.g., Frontend" />
+                </div>
+              }
+              <div class="actions">
+                <button type="submit">Add Quiz</button>
+                <button type="button" class="btn-secondary" (click)="closeCreate()">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+>>>>>>> 1deee4f (updated UI and functionality)
       }
       <div class="new-quiz-button container button centered" (click)="popupNewQuizCreation()">
         <h3>Create a New Quiz!</h3>
@@ -35,6 +224,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
       </div>
     </div>
   `,
+<<<<<<< HEAD
 
   styles: /*css*/`
 
@@ -188,5 +378,51 @@ export class SearchScreen {
     }
     this.quizesService.newQuiz(this.title_input);
     this.hideNewQuizCreation();
+=======
+  styles: ``,
+})
+export class SearchScreen {
+  quizesService = inject(Quizes);
+  quizes = this.quizesService.fetchedQuizes$;
+
+  // Derived categories from quiz data, defaulting to "My Quizzes" when missing
+  categories$: Observable<string[]> = this.quizes.pipe(
+    map(list => {
+      const cats = new Set<string>();
+      cats.add('My Quizzes');
+      list?.forEach(q => cats.add(q.category ?? 'My Quizzes'));
+      return Array.from(cats);
+    })
+  );
+
+  // Form state
+  newQuizTitle = '';
+  selectedCategory = 'My Quizzes';
+  newCategoryName = '';
+  showCreate = signal(false);
+
+  async onCreateQuiz() {
+    const chosenCategory = this.selectedCategory === '__new__'
+      ? (this.newCategoryName?.trim() || 'My Quizzes')
+      : this.selectedCategory;
+
+    await this.quizesService.addQuiz(this.newQuizTitle.trim(), chosenCategory);
+    this.resetForm();
+    this.closeCreate();
+  }
+
+  resetForm() {
+    this.newQuizTitle = '';
+    this.selectedCategory = 'My Quizzes';
+    this.newCategoryName = '';
+  }
+
+  openCreate() {
+    this.showCreate.set(true);
+  }
+
+  closeCreate() {
+    this.showCreate.set(false);
+>>>>>>> 1deee4f (updated UI and functionality)
   }
 }
