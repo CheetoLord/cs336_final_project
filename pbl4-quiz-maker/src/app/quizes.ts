@@ -37,6 +37,7 @@ export interface QuizReq {
   title: string;
   questionCount: number;
   questions: string;
+  category?: string; // optional for existing docs
 }
 
 export interface UserReq {
@@ -229,6 +230,18 @@ export class Quizes {
       quiz.questions = quiz.questions.filter(id => id !== questionID);
       await this.updateQuizQuestions(quizID, quiz.questions);
     }
+  }
+
+  async addQuiz(title: string, category: string) {
+    const id = Date.now();
+    const payload: QuizReq = {
+      id,
+      title,
+      questionCount: 0,
+      questions: '',
+      category,
+    };
+    await addDoc(this.quizCollection, payload);
   }
 
 }
