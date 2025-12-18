@@ -1,342 +1,374 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, computed, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { map, Observable } from 'rxjs';
-import { Quizes } from '../quizes';
-
-@Component({
-  selector: 'app-search-screen',
-  imports: [AsyncPipe, RouterLink, FormsModule],
-  template: /*html*/`
-    <div class="app-container">
-      <h1 class="hero-title">Welcome to the Quiz Maker</h1>
-      <div class="top-actions">
-        <button class="button" (click)="openCreate()">Create New +</button>
-      </div>
-      <div>
-        @for (category of (categories$ | async); track $index) {
-          <details class="dropdown">
-            <summary>{{ category }}</summary>
-            <div class="cards-grid">
-              @for (quiz of (quizes | async); track $index) {
-                @if ((quiz.category ?? 'My Quizzes') === category) {
-                  <div class="card">
-                    <h3>{{ quiz.title }}</h3>
-                    <p>Number of Questions: {{ quiz.questionCount }}</p>
-                    <div class="actions">
-                      <a routerLink="/test" class="button">Take Quiz</a>
-                      <button class="btn-secondary">Edit Quiz</button>
-                    </div>
-                  </div>
-                }
-              }
-            </div>
-          </details>
-        }
-      </div>
-
-      @if (showCreate()) {
-        <div class="modal-backdrop" (click)="closeCreate()">
-          <div class="modal-card" (click)="$event.stopPropagation()">
-            <h3>Create a New Quiz</h3>
-            <form (ngSubmit)="onCreateQuiz()">
-              <div style="margin-bottom:10px;">
-                <label for="title">Title</label><br />
-                <input id="title" name="title" [(ngModel)]="newQuizTitle" placeholder="e.g., Web Dev" required />
-              </div>
-              <div style="margin-bottom:10px;">
-                <label for="category">Category</label><br />
-                <select id="category" name="category" [(ngModel)]="selectedCategory">
-                  @for (category of (categories$ | async); track $index) {
-                    <option [value]="category">{{ category }}</option>
-                  }
-                  <option value="__new__">Create new category…</option>
-                </select>
-              </div>
-              @if (selectedCategory === '__new__') {
-                <div style="margin-bottom:10px;">
-                  <label for="newCat">New Category Name</label><br />
-                  <input id="newCat" name="newCat" [(ngModel)]="newCategoryName" placeholder="e.g., Frontend" />
-                </div>
-              }
-              <div class="actions">
-                <button type="submit">Add Quiz</button>
-                <button type="button" class="btn-secondary" (click)="closeCreate()">Cancel</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      }
-    </div>
-  `,
-  styles: ``,
-})
-export class SearchScreen {
-  quizesService = inject(Quizes);
-  quizes = this.quizesService.fetchedQuizes$;
-
-  // Derived categories from quiz data, defaulting to "My Quizzes" when missing
-  categories$: Observable<string[]> = this.quizes.pipe(
-    map(list => {
-      const cats = new Set<string>();
-      cats.add('My Quizzes');
-      list?.forEach(q => cats.add(q.category ?? 'My Quizzes'));
-      return Array.from(cats);
-    })
-  );
-
-  // Form state
-  newQuizTitle = '';
-  selectedCategory = 'My Quizzes';
-  newCategoryName = '';
-  showCreate = signal(false);
-
-  async onCreateQuiz() {
-    const chosenCategory = this.selectedCategory === '__new__'
-      ? (this.newCategoryName?.trim() || 'My Quizzes')
-      : this.selectedCategory;
-
-    await this.quizesService.addQuiz(this.newQuizTitle.trim(), chosenCategory);
-    this.resetForm();
-    this.closeCreate();
-  }
-
-  resetForm() {
-    this.newQuizTitle = '';
-    this.selectedCategory = 'My Quizzes';
-    this.newCategoryName = '';
-  }
-
-  openCreate() {
-    this.showCreate.set(true);
-  }
-
-  closeCreate() {
-    this.showCreate.set(false);
-  }
-}
-<<<<<<< HEAD
-import { Component, inject, computed, signal } from '@angular/core';
-=======
-import { Component, inject, signal } from '@angular/core';
-import { Route, RouterLink } from '@angular/router';
-import { AsyncPipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { map, Observable } from 'rxjs';
->>>>>>> 1deee4f (updated UI and functionality)
 import { Quizes } from '../quizes';
 import { QuizDisplay } from '../quiz-display/quiz-display';
-import { FormsModule } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-search-screen',
-<<<<<<< HEAD
-  imports: [QuizDisplay, FormsModule],
-  template: /*html*/`
-    <h1 class="centered title">Welcome to the Quiz Maker!</h1>
-    <div class="row-flex centered" style="margin-bottom: 20px;">
-      <input type="text" id="quiz-filter-input" name="quiz-filter-input" placeholder="Search for Quizes" [ngModel]="filterstr()" (ngModelChange)="filterstr.set($event)">
-    </div>
-    <div class="col-flex quiz-container">
-      @for (quiz of filteredQuizes(); track $index) {
-        <quiz-display [quiz]="quiz"></quiz-display>
-=======
-  imports: [AsyncPipe, RouterLink, FormsModule],
+  imports: [QuizDisplay, AsyncPipe, RouterLink],
   template: /*html*/`
     <div class="app-container">
-      <h1 class="hero-title">Welcome to the Quiz Maker</h1>
-      <div class="top-actions">
-        <button class="button" (click)="openCreate()">Create New +</button>
-      </div>
-      <div>
-        @for (category of (categories$ | async); track $index) {
-          <details class="dropdown">
-            <summary>{{ category }}</summary>
-            <div class="cards-grid">
-              @for (quiz of (quizes | async); track $index) {
-                @if ((quiz.category ?? 'My Quizzes') === category) {
-                  <div class="card">
-                    <h3>{{ quiz.title }}</h3>
-                    <p>Number of Questions: {{ quiz.questionCount }}</p>
-                    <div class="actions">
-                      <a routerLink="/test" class="button">Take Quiz</a>
-                      <button class="btn-secondary">Edit Quiz</button>
+      <header class="header">
+        <h1 class="title">Welcome to the Quiz Maker</h1>
+        <button class="create-btn" (click)="popupNewQuizCreation()">Create New +</button>
+      </header>
+
+      <main class="main-content">
+        @if (filterstr()) {
+          <div class="search-section">
+            <h2 class="section-title">Search Results</h2>
+            <div class="quiz-grid">
+              @for (quiz of filteredQuizes(); track $index) {
+                <div class="quiz-card">
+                  <h3 class="quiz-title">{{ quiz.title }}</h3>
+                  <p class="quiz-meta">Number of Questions: {{ quiz.questions?.length || 0 }}</p>
+                  <div class="quiz-actions">
+                    <button class="take-quiz-btn">Take Quiz</button>
+                    <button class="edit-quiz-btn">Edit Quiz</button>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        } @else {
+          @for (category of (categories$ | async); track $index) {
+            <details class="category-section" open>
+              <summary class="category-header">
+                <span class="category-title">{{ category }}</span>
+                <span class="category-arrow">▼</span>
+              </summary>
+              <div class="quiz-grid">
+                @for (quiz of filteredQuizesForCategory(category); track $index) {
+                  <div class="quiz-card">
+                    <h3 class="quiz-title">{{ quiz.title }}</h3>
+                    <p class="quiz-meta">Number of Questions: {{ quiz.questions?.length || 0 }}</p>
+                    <div class="quiz-actions">
+                      <button class="take-quiz-btn">Take Quiz</button>
+                      <button class="edit-quiz-btn">Edit Quiz</button>
                     </div>
                   </div>
                 }
-              }
-            </div>
-          </details>
+              </div>
+            </details>
+          }
         }
-      </div>
+      </main>
 
       @if (showCreate()) {
         <div class="modal-backdrop" (click)="closeCreate()">
           <div class="modal-card" (click)="$event.stopPropagation()">
             <h3>Create a New Quiz</h3>
             <form (ngSubmit)="onCreateQuiz()">
-              <div style="margin-bottom:10px;">
-                <label for="title">Title</label><br />
-                <input id="title" name="title" [(ngModel)]="newQuizTitle" placeholder="e.g., Web Dev" required />
+              <div class="form-group">
+                <label for="title">Title</label>
+                <input id="title" name="title" [value]="newQuizTitle()" (input)="newQuizTitle.set($any($event.target).value)" placeholder="e.g., Web Dev" required />
               </div>
-              <div style="margin-bottom:10px;">
-                <label for="category">Category</label><br />
-                <select id="category" name="category" [(ngModel)]="selectedCategory">
+              <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category" [value]="selectedCategory()" (change)="selectedCategory.set($any($event.target).value)">
                   @for (category of (categories$ | async); track $index) {
                     <option [value]="category">{{ category }}</option>
                   }
                   <option value="__new__">Create new category…</option>
                 </select>
               </div>
-              @if (selectedCategory === '__new__') {
-                <div style="margin-bottom:10px;">
-                  <label for="newCat">New Category Name</label><br />
-                  <input id="newCat" name="newCat" [(ngModel)]="newCategoryName" placeholder="e.g., Frontend" />
+              @if (selectedCategory() === '__new__') {
+                <div class="form-group">
+                  <label for="newCat">New Category Name</label>
+                  <input id="newCat" name="newCat" [value]="newCategoryName()" (input)="newCategoryName.set($any($event.target).value)" placeholder="e.g., Frontend" />
                 </div>
               }
               <div class="actions">
-                <button type="submit">Add Quiz</button>
-                <button type="button" class="btn-secondary" (click)="closeCreate()">Cancel</button>
+                <button type="submit" class="primary-btn">Add Quiz</button>
+                <button type="button" class="secondary-btn" (click)="closeCreate()">Cancel</button>
               </div>
             </form>
           </div>
         </div>
->>>>>>> 1deee4f (updated UI and functionality)
       }
-      <div class="new-quiz-button container button centered" (click)="popupNewQuizCreation()">
-        <h3>Create a New Quiz!</h3>
-      </div>
-    </div>
-
-    <div class="new-quiz-creation-container">
-      <div class="new-quiz-creation-menu">
-        <form>
-          <h2 class="centered">Create a New Quiz</h2>
-          <input type="text" id="quiz-title" name="quiz-title" placeholder="Enter quiz title" [(ngModel)]="title_input">
-          <p id="quiz-creation-empty-error" class="centered">Quiz title cannot be blank!</p>
-          <div id="quiz-creation-buttons-container" class="row-flex">
-            <div id="create-button" class="button" (click)="createNewQuiz()">Create Quiz</div>
-            <div id="cancel-button" class="button" (click)="hideNewQuizCreation()">Cancel</div>
-          </div>
-        </form>
-      </div>
     </div>
   `,
-<<<<<<< HEAD
-
   styles: /*css*/`
+    .app-container {
+      min-height: 100vh;
 
-    .quiz-container {
-      width: 60%;
-      margin: 0 auto;
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background-color: #334155;
+      z-index: 100;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      box-sizing: border-box;
+    }
+
+    .title {
+      font-size: 2rem;
+      font-weight: 500;
+      color: white;
+      margin: 0;
+    }
+
+    .create-btn {
+      background-color: #4F46E5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .create-btn:hover {
+      background-color: #4338CA;
+    }
+
+    .main-content {
+      padding: 100px 40px 40px 40px;
+    }
+
+    .category-section {
+      margin-bottom: 32px;
+      border: 1px solid #475569;
+      border-radius: 12px;
+    }
+
+    .category-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      cursor: pointer;
+      list-style: none;
+      background-color: #475569;
+      border-radius: 12px;
+    }
+
+    .category-header::-webkit-details-marker {
+      display: none;
+    }
+
+    .category-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: white;
+    }
+
+    .category-arrow {
+      color: white;
+      font-size: 1rem;
+      transition: transform 0.2s ease;
+    }
+
+    .category-section[open] .category-arrow {
+      transform: rotate(180deg);
+    }
+
+    .category-section[open] .category-header {
+      border-radius: 12px 12px 0 0;
+    }
+
+    .quiz-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
       padding: 20px;
-      border: 4px solid black;
-      border-radius: 15px;
-      background-color: #f0f0f0;
-      max-height: 70vh;
-      overflow-y: auto;
-      scrollbar-color: gray transparent; /* make sure the scrollbar track doesnt clip the border */
+      background-color: #334155;
+      border-radius: 0 0 12px 12px;
     }
 
-
-
-    #quiz-filter-input {
-      width: 50%;
-      padding: 10px;
-      border: 2px solid black;
-      border-radius: 10px;
-      font-size: 16px;
-      text-align: center;
+    .quiz-card {
+      background-color: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-
-
-    .new-quiz-button {
-      margin: 10px;
-      padding: 10px;
-      border-radius: 10px;
+    .quiz-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
+    .quiz-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1F2937;
+      margin: 0 0 8px 0;
+      line-height: 1.3;
+    }
 
+    .quiz-meta {
+      font-size: 0.9rem;
+      color: #243b5cff;
+      margin: 0 0 16px 0;
+    }
 
-    .new-quiz-creation-container {
+    .quiz-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .take-quiz-btn {
+      background-color: #4F46E5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      flex: 1;
+      transition: background-color 0.2s ease;
+    }
+
+    .take-quiz-btn:hover {
+      background-color: #4338CA;
+    }
+
+    .edit-quiz-btn {
+      background-color: #F3F4F6;
+      color: #4B5563;
+      border: 1px solid #D1D5DB;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      flex: 1;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .edit-quiz-btn:hover {
+      background-color: #E5E7EB;
+      border-color: #9CA3AF;
+    }
+
+    .search-section {
+      margin-bottom: 32px;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 20px;
+    }
+
+    .modal-backdrop {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.3);
+      background-color: rgba(0, 0, 0, 0.5);
       backdrop-filter: blur(5px);
-      display: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
     }
 
-    .new-quiz-creation-menu {
-      position: absolute;
-      top: 30%;
-      left: 30%;
-      bottom: 30%;
-      right: 30%;
-      background-color: #dddddd;
-      margin: 20px auto;
-      padding: 20px;
-      border: 4px solid black;
-      border-radius: 15px;
+    .modal-card {
+      background-color: white;
+      border-radius: 16px;
+      padding: 32px;
+      min-width: 400px;
+      max-width: 500px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
     }
 
-    #quiz-title {
+    .modal-card h3 {
+      color: #1F2937;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0 0 24px 0;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
       display: block;
-      width: 80%;
-      margin: 0 auto;
-      text-align: center;
-      padding: 10px;
-      border: 2px solid black;
-      border-radius: 10px;
-      background-color: #e0e0e0;
-      font-size: 20px;
+      color: #374151;
+      font-weight: 500;
+      margin-bottom: 6px;
     }
 
-    #quiz-creation-empty-error {
-      color: red;
-      display: none;
-      margin-top: 10px;
-      margin-bottom: 0px;
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #D1D5DB;
+      border-radius: 8px;
+      font-size: 1rem;
+      background-color: white;
+      box-sizing: border-box;
     }
 
-    #quiz-creation-buttons-container {
-      margin-top: 10px;
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #4F46E5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
     }
 
-    #create-button, #cancel-button {
-      display: inline-block;
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .primary-btn {
+      background-color: #4F46E5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
       flex: 1;
-      padding: 10px;
-      border-radius: 10px;
-      text-align: center;
-      border-color: black;
+      transition: background-color 0.2s ease;
     }
 
-    #create-button {
-      background-color: #4CAF50;
-      color: white;
+    .primary-btn:hover {
+      background-color: #4338CA;
     }
 
-    #cancel-button {
-      background-color: #f44336;
-      color: white;
+    .secondary-btn {
+      background-color: white;
+      color: #374151;
+      border: 1px solid #D1D5DB;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      flex: 1;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
     }
 
-    #create-button:hover {
-      background-color: #45a049;
-      font-weight: bold;
+    .secondary-btn:hover {
+      background-color: #F9FAFB;
+      border-color: #9CA3AF;
     }
-
-    #cancel-button:hover {
-      background-color: #da190b;
-      font-weight: bold;
-    }
-
   `,
 })
 export class SearchScreen {
@@ -344,6 +376,18 @@ export class SearchScreen {
   quizes = toSignal(this.quizesService.fetchedQuizes$, { initialValue: [] });
   filterstr = signal('');
   
+  // Derived categories from quiz data, defaulting to "My Quizzes" when missing
+  categories$: Observable<string[]> = this.quizesService.fetchedQuizes$.pipe(
+    map(list => {
+      const cats = new Set<string>();
+      cats.add('My Quizzes');
+      if (list && list.length > 0) {
+        list.forEach(q => cats.add(q.category ?? 'My Quizzes'));
+      }
+      return Array.from(cats);
+    })
+  );
+
   filteredQuizes = computed(() => {
     const filter = this.filterstr().toLowerCase();
     return this.quizes().filter(quiz => 
@@ -351,70 +395,43 @@ export class SearchScreen {
     );
   });
 
-  title_input: string = '';
-
-  popupNewQuizCreation() {
-    // popup menu
-    const container = document.querySelector('.new-quiz-creation-container') as HTMLElement;
-    container.style.display = 'block';
-    // clear input field
-    const titleInput = document.getElementById('quiz-title') as HTMLInputElement;
-    titleInput.value = '';
-    // hide error message
-    const errorMsg = document.getElementById('quiz-creation-empty-error') as HTMLElement;
-    errorMsg.style.display = 'none';
+  filteredQuizesForCategory(category: string) {
+    return this.filteredQuizes().filter(quiz => 
+      (quiz.category ?? 'My Quizzes') === category
+    );
   }
-
-  hideNewQuizCreation() {
-    const container = document.querySelector('.new-quiz-creation-container') as HTMLElement;
-    container.style.display = 'none';
-  }
-
-  createNewQuiz() {
-    if (this.title_input.trim() === '') {
-      const errorMsg = document.getElementById('quiz-creation-empty-error') as HTMLElement;
-      errorMsg.style.display = 'block';
-      return;
-    }
-    this.quizesService.newQuiz(this.title_input);
-    this.hideNewQuizCreation();
-=======
-  styles: ``,
-})
-export class SearchScreen {
-  quizesService = inject(Quizes);
-  quizes = this.quizesService.fetchedQuizes$;
-
-  // Derived categories from quiz data, defaulting to "My Quizzes" when missing
-  categories$: Observable<string[]> = this.quizes.pipe(
-    map(list => {
-      const cats = new Set<string>();
-      cats.add('My Quizzes');
-      list?.forEach(q => cats.add(q.category ?? 'My Quizzes'));
-      return Array.from(cats);
-    })
-  );
 
   // Form state
-  newQuizTitle = '';
-  selectedCategory = 'My Quizzes';
-  newCategoryName = '';
+  newQuizTitle = signal('');
+  selectedCategory = signal('My Quizzes');
+  newCategoryName = signal('');
   showCreate = signal(false);
 
   async onCreateQuiz() {
-    const chosenCategory = this.selectedCategory === '__new__'
-      ? (this.newCategoryName?.trim() || 'My Quizzes')
-      : this.selectedCategory;
+    const title = this.newQuizTitle().trim();
+    if (!title) return;
 
-    await this.quizesService.addQuiz(this.newQuizTitle.trim(), chosenCategory);
-    this.resetForm();
-    this.closeCreate();
+    const chosenCategory = this.selectedCategory() === '__new__'
+      ? (this.newCategoryName().trim() || 'My Quizzes')
+      : this.selectedCategory();
+
+    try {
+      await this.quizesService.addQuiz(title, chosenCategory);
+      this.resetForm();
+      this.closeCreate();
+    } catch (error) {
+      console.error('Error creating quiz:', error);
+    }
   }
 
   resetForm() {
-    this.newQuizTitle = '';
-    this.selectedCategory = 'My Quizzes';
-    this.newCategoryName = '';
+    this.newQuizTitle.set('');
+    this.selectedCategory.set('My Quizzes');
+    this.newCategoryName.set('');
+  }
+
+  popupNewQuizCreation() {
+    this.showCreate.set(true);
   }
 
   openCreate() {
@@ -423,6 +440,5 @@ export class SearchScreen {
 
   closeCreate() {
     this.showCreate.set(false);
->>>>>>> 1deee4f (updated UI and functionality)
   }
 }
